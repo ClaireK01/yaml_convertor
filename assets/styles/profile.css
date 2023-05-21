@@ -1,0 +1,49 @@
+.image-container{
+    position: relative;
+}
+
+.profile-container{
+    display: flex;
+}
+
+.profile-picture{
+    width: 50%;
+}
+
+.profile-picture .image-container{
+    margin: auto;
+    width: 300px;
+    height: 300px;
+}
+
+.profile-container form{
+    width: 100%;
+    display: flex;
+}
+
+.profile-edit{
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.profile-edit .btn-submit{
+    margin: 2rem 0;
+}
+
+.form-input-username{
+    text-align: center;
+}
+
+.form-input{
+    margin-top: 1rem;
+}
+
+.image-container .fa-pen{
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    cursor: pointer;
+}
+

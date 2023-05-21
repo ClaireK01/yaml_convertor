@@ -1,7 +1,33 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<div class="container">
+<div class="main div-pad profile-container container">
+    {{ form_start(form) }}
+        <div class="profile-picture">
+            <div class="image-container">
+                <span data-toggle="modal" data-target="#myModal"><i class="fa-solid fa-pen"></i></span>
+            </div>
+            <div class="form-input-username">
+                {{ form_row(form.username) }}
+            </div>
+        </div>
+        <div class="profile-edit">
+            {# TODO: créer widget formulaire #}
+            <div class="form-input">
+                <span>{{ form_label(form.email) }} :</span> <br>
+                {{ form_widget(form.email) }}
+            </div>
+            <div class="form-input">
+                <span>{{ form_label(form.description) }} :</span> <br>
+                {{ form_widget(form.description) }}
+            </div>
 
+            <input type="submit" class="btn-submit btn btn-primary" value="Modifier">
+        </div>
+    {{ form_end(form) }}
 </div>
+
+
 {% endblock %}
+
+
