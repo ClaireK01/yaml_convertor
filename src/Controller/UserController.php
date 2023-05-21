@@ -12,7 +12,6 @@ class UserController extends AbstractController
     #[Route('/', name: 'app_user')]
     public function index(): Response
     {
-        //TODO: faire page index, page inscription/connexion, interface utilisateur + ajout tarifs
 
         if(!$this->getUser()){
             $this->redirectToRoute('app_homepage');
