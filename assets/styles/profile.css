@@ -16,6 +16,31 @@
     height: 300px;
 }
 
+.add-realisation{
+    background-color: lightgrey;
+    text-align: center;
+}
+
+.add-realisation i{
+    color: #606060;
+    padding: 5rem;
+    font-size: 6rem;
+}
+
+.add-realisation:hover{
+    cursor: pointer;
+    background-color: #606060;
+}
+
+.add-realisation:hover i{
+    color: lightgrey;
+}
+
+.realisation-container, .profile-container{
+    padding: 2rem 0;
+}
+
+
 .profile-container form{
     width: 100%;
     display: flex;
