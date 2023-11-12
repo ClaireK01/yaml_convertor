@@ -1,7 +1,7 @@
 /************ header *********/
 
 .main.div-pad{
-    padding-top:7rem;
+    padding:7rem 0;
 }
 
 .slider{
@@ -13,6 +13,7 @@
 }
 
 nav{
+    z-index: 99;
     position: fixed;
     display: flex;
     justify-content: space-between;
@@ -44,7 +45,7 @@ nav ul li{
 /***************************** image **********************/
 
 .image-container{
-    background-color: #8d8585;
+    background-color: lightgrey;
 }
 
 .image-container img{
