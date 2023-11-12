@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\{NAME}Repository;
+use Doctrine\ORM\Mapping as ORM;
+use Knp\DoctrineBehaviors\Model\Timestampable\TimestampableTrait;
+use Knp\DoctrineBehaviors\Model\SoftDeletable\SoftDeletableTrait;
+use Symfony\Component\Validator\Constraints as Assert;
+
+{IFCONTENT}
+use Knp\DoctrineBehaviors\Model\Translatable\TranslatableTrait;
+{/IFCONTENT}
+
+#[ORM\Entity(repositoryClass: {NAME}Repository::class)]
+class {NAME}
+{
+    use TranslatableTrait, SoftDeletableTrait, TimestampableTrait;
+
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private $id;
+
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+}

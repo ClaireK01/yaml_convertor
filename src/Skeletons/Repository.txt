@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Repository;
+
+use App\Entity\{NAME};
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+
+/**
+ * @extends ServiceEntityRepository<{NAME}>
+ *
+ * @method {NAME}|null find($id, $lockMode = null, $lockVersion = null)
+ * @method {NAME}|null findOneBy(array $criteria, array $orderBy = null)
+ * @method {NAME}[]    findAll()
+ * @method {NAME}[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
+class {NAME}Repository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, {NAME}::class);
+    }
+
+    public function add({NAME} $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove({NAME} $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+}

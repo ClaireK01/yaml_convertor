@@ -49,12 +49,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 300, nullable: true)]
     private ?string $description;
 
-    #[ORM\Column(type: 'boolean', nullable: true )]
-    private ?string $doNSFW;
-
-
-
-
     #[ORM\Column]
     private array $roles = [];
 
@@ -64,15 +58,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\ManyToMany(targetEntity: Comission::class, mappedBy: 'client')]
-    private Collection $comissions;
 
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
     public function __construct()
     {
-        $this->comissions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -145,32 +136,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    /**
-     * @return Collection<int, Comission>
-     */
-    public function getComissions(): Collection
-    {
-        return $this->comissions;
-    }
-
-    public function addComission(Comission $comission): self
-    {
-        if (!$this->comissions->contains($comission)) {
-            $this->comissions->add($comission);
-            $comission->addClient($this);
-        }
-
-        return $this;
-    }
-
-    public function removeComission(Comission $comission): self
-    {
-        if ($this->comissions->removeElement($comission)) {
-            $comission->removeClient($this);
-        }
-
-        return $this;
-    }
 
     public function isVerified(): bool
     {
