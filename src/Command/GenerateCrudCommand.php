@@ -24,16 +24,14 @@ class GenerateCrudCommand extends Command
     const PATH_SKELETON = "./src/Skeletons/";
 
 
-    protected function configure(): void
-    {
-
-    }
+    protected function configure(): void { }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
         $name = $io->ask("Nom de l'entité ? (ex : Article, Bibliotheque...)");
+        $name = ucfirst($name);
         $trans = $io->confirm('Générer les traductions ?', 'y');
 
         //entité
@@ -65,15 +63,11 @@ class GenerateCrudCommand extends Command
             if ($trans) {
                 $content = str_replace('{IFCONTENT}', '', $content);
                 $content = str_replace('{/IFCONTENT}', '', $content);
-                $content = str_replace('{ELSECONTENT}([\s\S]*?){/ELSECONTENT}~', '', $content);
+                $content = str_replace('#{ELSECONTENT}(.*?){/ELSECONTENT}#s', '', $content);
             } else {
                 $content = str_replace('{ELSECONTENT}', '', $content);
                 $content = str_replace('{/ELSECONTENT}', '', $content);
-                $re = '#{IFCONTENT}.*?{\/IFCONTENT}#';
-
-                VarDumper::dump('result:');
-                die(VarDumper::dump(preg_match($re, $content)));
-
+                $re = '#{IFCONTENT}(.*?){/IFCONTENT}#s';
                 $content = preg_replace($re, '', $content);
             }
             if($type == "Entity"){
