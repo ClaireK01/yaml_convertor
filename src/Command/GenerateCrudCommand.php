@@ -46,6 +46,8 @@ class GenerateCrudCommand extends Command
             //translation repository
             $this->generate('TranslationRepository', $name, './src/Repository/', 'TranslationRepository.txt',  $trans, $io);
         }
+        //controller
+        $this->generate('Controller', $name, './src/Controller/Admin/', 'Controller.txt',  $trans, $io);
 
 
         $io->success('Entité ' . $name . ' créer avec succès !');
@@ -60,6 +62,7 @@ class GenerateCrudCommand extends Command
 
         if ($content) {
             $content = str_replace('{NAME}', ucfirst($name), $content);
+            $content = str_replace('{name}', strtolower($name), $content);
             if ($trans) {
                 $content = str_replace('{IFCONTENT}', '', $content);
                 $content = str_replace('{/IFCONTENT}', '', $content);
