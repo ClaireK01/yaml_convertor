@@ -1,5 +1,9 @@
 {% extends "base_admin.html.twig" %}
+{% trans_default_domain 'admin' %}
 
 {% block body %}
-
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button>{{ 'action.edit'|trans }}</button>
+    {{ form_end(form) }}
 {% endblock %}

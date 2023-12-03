@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f0b82a3e64be74f5ccc780b601b90ac2",
+    "content-hash": "76e570a21497d2f49f0ec6b8121e04ab",
     "packages": [
         {
             "name": "artgris/filemanager-bundle",

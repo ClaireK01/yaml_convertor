@@ -54,10 +54,11 @@ class {NAME}Controller extends AbstractController
         }
         return $this->render('/admin/edit.html.twig', [
             '{name}' => ${name},
-            'form' => $form
+            'form' => $form->createView(),
         ]);
     }
 
+    #[ParamConverter('{name}', class: {NAME}::class)]
     #[Route('/delete/{{name}}', name: 'admin_{name}_delete')]
     public function deleteAction({NAME} ${name}, Request $request, EntityManagerInterface $em): Response
     {
