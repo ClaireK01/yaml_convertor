@@ -1,9 +1,12 @@
 {% trans_default_domain 'admin' %}
- <ul class="menu">
-        <a class="" href="{{ path('admin_article_index') }}">
-            <li><i class="fa-regular fa-newspaper"></i> {{ 'nav.article'|trans }}</li>
-        </a>
-        <a href="{{ path('admin_membre_index') }}">
-            <li><i class="fa-group fa-newspaper"></i> {{ 'nav.team'|trans }}</li>
-        </a>
-    </ul>
+
+<ul class="menu">
+    <a  class="{% if 'admin_article' in app.request.get('_route') %}selected{% endif %}"
+        href="{{ path('admin_article_index') }}">
+        <li><i class="fa-solid fa-newspaper"></i> {{ 'nav.article'|trans }}</li>
+    </a>
+    <a  class="{% if 'admin_membre' in app.request.get('_route') %}selected{% endif %}"
+        href="{{ path('admin_membre_index') }}">
+        <li><i class="fa-solid fa-user-group"></i> {{ 'nav.team'|trans }}</li>
+    </a>
+</ul>
