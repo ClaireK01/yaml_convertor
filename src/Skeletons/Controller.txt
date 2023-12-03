@@ -26,7 +26,7 @@ class {NAME}Controller extends AbstractController
         //->where('e.deletedAt is null')
         ;
 
-        $paginator->paginate(
+        $pagination = $paginator->paginate(
             $qb,
             $page,
             10
@@ -34,21 +34,31 @@ class {NAME}Controller extends AbstractController
 
         return $this->render('/admin/list.html.twig', [
             'controller_name' => 'AppController',
+            'pagination' => $pagination,
         ]);
     }
 
-    #[Route('/edit/{id}', name: 'admin_{name}_index')]
+    #[Route('/edit/{id}', name: 'admin_{name}_edit')]
     #[Route('/new', name: 'admin_{name}_new')]
-    public function editAction($id, Request $request, EntityManagerInterface $em): Response
+    public function editAction(Request $request, EntityManagerInterface $em, , $id = null): Response
     {
         ${name} = $id != null && $em->getRepository({NAME}::class)->find($id) ? $em->getRepository({NAME}::class)->find($id) : new {NAME}();
 
+        $form = $this->createForm({NAME}Type::class, ${name});
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $em->persist(${name});
+            $em->flush();
+        }
         return $this->render('/admin/edit.html.twig', [
             '{name}' => ${name},
+            'form' => $form
         ]);
     }
 
-    #[Route('/delete/{{name}}', name: 'admin_{name}_index')]
+    #[Route('/delete/{{name}}', name: 'admin_{name}_delete')]
     public function deleteAction({NAME} ${name}, Request $request, EntityManagerInterface $em): Response
     {
         $em->remove(${name});

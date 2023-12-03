@@ -3,33 +3,17 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        {{ encore_entry_script_tags('js') }}
+        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
             {{ encore_entry_link_tags('style') }}
         {% endblock %}
 
-        {% block javascripts %}{% endblock %}
+        {% block javascripts %}
+            {{ encore_entry_script_tags('js') }}
+        {% endblock %}
     </head>
     <body>
-        {% block header %}
-        <header>
-            <nav>
-                <a href="{{ path('app_homepage') }}"><div class="logo"></div></a>
-                <ul>
-                    <li>A propos</li>
-                    {% if app.user %}
-                        <li><a href="{{ path('app_user') }}" class="btn btn-primary">Mon Profil</a></li>
-                        <li><a href="{{ path('app_logout') }}" class="">Se déconnecter</a></li>
-                    {% else %}
-                        <li><a href="{{ path('app_register') }}" class="btn btn-primary">S'inscrire</a></li>
-                        <li><a href="{{ path('app_login') }}" class="btn btn-primary">Se Connecter</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </header>
-    {% endblock %}
         {% block body %}{% endblock %}
     </body>
 </html>

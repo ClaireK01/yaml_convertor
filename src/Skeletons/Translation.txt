@@ -8,10 +8,11 @@ use Knp\DoctrineBehaviors\Model\SoftDeletable\SoftDeletableTrait;
 use Knp\DoctrineBehaviors\Model\Timestampable\TimestampableTrait;
 use Knp\DoctrineBehaviors\Model\Translatable\TranslationTrait;
 use Knp\DoctrineBehaviors\Model\Sluggable\SluggableTrait;
+use Knp\DoctrineBehaviors\Contract\Entity\TranslationInterface;
 
 
 #[ORM\Entity(repositoryClass: {NAME}TranslationRepository::class)]
-class {NAME}Translation
+class {NAME}Translation implements TranslationInterface
 
 {
     use TranslationTrait, SoftDeletableTrait, TimestampableTrait, SluggableTrait;

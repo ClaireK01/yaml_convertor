@@ -1,0 +1,80 @@
+@import "@fortawesome/fontawesome-free/css/fontawesome.css";
+@import "@fortawesome/fontawesome-free/css/regular.min.css";
+@import "@fortawesome/fontawesome-free/css/solid.min.css";
+
+:root{
+    --main : #090921;
+    --secondary : #17175d;
+
+    --font-main : Roboto
+}
+
+
+body{
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: var(--font-main);
+}
+
+.content{
+    display: flex;
+    width: 100vw;
+}
+
+button{
+    border-radius: 10px;
+    background-color: var(--secondary);
+    padding: 1rem;
+    color: white;
+    border: none;
+}
+
+.header{
+    height: 10vh;
+    background-color: var(--main);
+}
+.header .logo{
+    height: 100%;
+    width: 15vw;
+    border-right: var(--secondary) solid 1px;
+}
+
+.container{
+    width: 100%;
+    padding: 1rem;
+}
+
+.container .list{
+    width: 100%;
+}
+
+.menu{
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--secondary);
+    list-style: none;
+    min-width: 15vw;
+    padding: 0;
+    margin: 0;
+}
+
+.menu a{
+    margin: 0;
+
+}
+
+.menu li{
+    height: 20vh;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu li i{
+    margin-right:1rem ;
+}

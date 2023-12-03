@@ -1,0 +1,10 @@
+nav:
+  product: Produits
+  article: Articles
+  donation: Donation
+  team: Equipe
+
+action:
+  add: Ajouter
+  edit : Modifier
+  delete : Supprimer

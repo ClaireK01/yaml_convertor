@@ -16,7 +16,7 @@ class {NAME}Type extends AbstractType
     {
         $builder
         {IFCONTENT}
-            ->add('translation', TranslationsType::class, [
+            ->add('translations', TranslationsType::class, [
                 'fields' => [
                     'title' => [
                         'type' => TextType::class,

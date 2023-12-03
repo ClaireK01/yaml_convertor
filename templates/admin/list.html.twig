@@ -1,5 +1,23 @@
 {% extends "base_admin.html.twig" %}
+{% trans_default_domain 'admin' %}
 
 {% block body %}
+
+    <div class="container">
+        <div class="admin-actions">
+            <button>{{ 'action.add'|trans }}</button>
+        </div>
+
+        <ul class="list">
+            {% for e in pagination %}
+                <li>
+                    {{ e.transalte.title }}
+                    <button>{{ 'action.edit'|trans }}</button>
+                    <button>{{ 'action.delete'|trans }}</button>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
 
 {% endblock %}
