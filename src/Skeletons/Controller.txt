@@ -23,7 +23,7 @@ class {NAME}Controller extends AbstractController
         $qb = $em->createQueryBuilder();
         $qb->select('e')
             ->from({NAME}::class, 'e')
-        //->where('e.deletedAt is null')
+            ->where('e.deletedAt is null')
         ;
 
         $pagination = $paginator->paginate(
