@@ -59,7 +59,7 @@ class {NAME}Controller extends AbstractController
     }
 
     #[ParamConverter('{name}', class: {NAME}::class)]
-    #[Route('/delete/{{name}}', name: 'admin_{name}_delete')]
+    #[Route('/delete/{id}', name: 'admin_{name}_delete')]
     public function deleteAction({NAME} ${name}, Request $request, EntityManagerInterface $em): Response
     {
         $em->remove(${name});
