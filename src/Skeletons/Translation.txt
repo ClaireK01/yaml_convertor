@@ -22,20 +22,14 @@ class {NAME}Translation implements TranslationInterface
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-    *@ORM\Column(name="title", type="string", nullable=true)
-    **/
-    private $title;
+    #[ORM\Column(name:"title", type: 'string')]
+    protected $title;
 
-    /**
-    *@ORM\Column(name="shortContent", type="string", nullable=true)
-    **/
-    private $shortContent;
+    #[ORM\Column(name:"shortContent", type: 'text')]
+    protected $shortContent;
 
-    /**
-    *@ORM\Column(name="content", type="text", nullable=true)
-    **/
-    private $content;
+    #[ORM\Column(name:"content", type: 'text')]
+    protected $content;
 
     public function getId(): ?int
     {
