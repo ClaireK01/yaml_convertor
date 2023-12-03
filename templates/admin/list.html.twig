@@ -5,15 +5,18 @@
 
     <div class="container">
         <div class="admin-actions">
-            <button>{{ 'action.add'|trans }}</button>
+            <a href="{{ path(app.request.get('_route')|replace({'index' : 'new'})) }}">
+                <button class="btn-add">{{ 'action.add'|trans }}</button>
+            </a>
         </div>
 
         <ul class="list">
             {% for e in pagination %}
                 <li>
-                    {{ e.transalte.title }}
-                    <button>{{ 'action.edit'|trans }}</button>
-                    <button>{{ 'action.delete'|trans }}</button>
+                    {{ e.translate.title }}
+                    {{ type }}
+                    <a href="{{ path(app.request.get('_route')|replace({'index' : 'edit'}), {'id' : e.id}) }}"><button>{{ 'action.edit'|trans }}</button></a>
+                    <a href="{{ path(app.request.get('_route')|replace({'index' : 'delete'}), {'id' : e.id}) }}"><button>{{ 'action.delete'|trans }}</button></a>
                 </li>
             {% endfor %}
         </ul>
