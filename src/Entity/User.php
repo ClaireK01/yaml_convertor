@@ -35,6 +35,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     use PictureTrait;
 
+    const TYPES = ["basic" => 1, "premium" => 2];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -48,6 +50,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 300, nullable: true)]
     private ?string $description;
+
+    #[ORM\Column(type: "integer", nullable: true)]
+
+    private $type;
 
     #[ORM\Column]
     private array $roles = [];

@@ -1,2 +1,39 @@
+product:
+  name: Produit
+  ref: |
+    Référence : %ref%
+  new: Nouveau
+  see: Voir la fiche produit %product%
+  desc: Description du produit
+  addPr: Ajouter à votre panier
+  nostock: Désolé nous n'avons pas ce produit en stock pour le moment, revenez un autre jour !
+  noimg: Aucune photo de ce produit n'est disponible pour le moment.
+  option: Sélectionnez une option
+  errorAttr: Impossible d'ajouter au panier, veuillez renseigner tous les attributs.
+  prix: Prix
+  quantity: Quantité
+  avant:
+    discover: Découvrez
+    more: Ces produits pourraient vous intéresser
+    assoc: Produits associés
+    promote: Promos
+
 nav:
-  article: Articles
+  home: Accueil
+  qui: Qui sommes-nous
+  magasin: Notre magasin
+  shop: Notre boutique
+  actu: News & actualités
+  contact: Nous contacter
+  legal: Mentions légales
+  cookies: Utilisation des cookies
+
+
+
+site: Phénix shoes
+backh: Retour à l'accueil
+back: Retour
+menu: Menu
+close: Fermer
+send: Envoyer
+inscrire: S'inscrire
