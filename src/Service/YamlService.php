@@ -15,71 +15,6 @@ class YamlService{
         $this->kernel = $kernel;
     }
 
-
-//    public function handleYaml(string $path, string $original, string $target){
-//
-//        $yaml = file_get_contents($path);
-//        $array = explode("\n", $yaml);
-//        $arrayTrans = [];
-//
-//        $key = null;
-//        $multiline = false;
-//
-//        foreach ($array as $line){
-//
-//            $word = $multiline ? [$line] : explode(':', $line);
-//            $word = str_replace(["\r"], " ", $word);
-////            $word = str_replace(" ", "->", $word);
-//            $word = preg_replace("#^[\s.]+#", "->", $word);
-//
-//            if((key_exists(1, $word) && !ctype_space($word[1]) && $word[1] != "->") ||  (!key_exists(1, $word) && $multiline) ){
-//
-//                if(!$multiline){
-//                    $multiline = str_contains($word[1], "|");
-//                    $wordToTranslate = $word[1];
-//                    preg_match("#^[->.]+#", $word[1], $matches);
-//                }else{
-//                    $wordToTranslate = $word[0];
-//                    $matchReg = preg_match("#^[->.]+#", $word[0], $matches);
-//                    if($matchReg == 0){
-//                        $multiline = false;
-//                    }
-//                }
-//                $indentation = count($matches) > 0 ? $matches[0] : '';
-//
-//                if($wordToTranslate != "" && $wordToTranslate != "->" && !ctype_space($wordToTranslate) ){
-//
-//                    $json = $this->getTransaltion(str_replace('->', '', $wordToTranslate), $original, $target);
-//                    $trans = null;
-//
-//                    //faire un array reduce ou un truc du genre?
-//                    foreach ($json->matches as $m){
-//                        if($trans == null){
-//                            $trans = $m;
-//                        }else if($trans instanceof \stdClass && $m->match > $trans->match){
-//                            $m->match = $trans->match;
-//                            $trans = $m;
-//                        }
-//                    }
-//
-//                    if(!$multiline || ( key_exists(1, $word) && $multiline && str_contains($word[1], "|") ) ){
-//                        $key = $word[0];
-//                        $arrayTrans[] = $key . " : " . $trans->translation;
-//                    }else{
-//                        $arrayTrans[] = $indentation. $trans->translation;
-//                    }
-//                }
-//
-//            }else{
-//                if($word[0] != "" && !ctype_space($word[0]) && $word[0] != "->"){
-//                    $arrayTrans[] = $word[0] . " : " ;
-//                }
-//            }
-//        }
-//
-//        return  str_replace('->', ' ', $arrayTrans);
-//    }
-    
     public function handleYaml(string $path, string $original, string $target){
         $yaml = file_get_contents($path);
         $arrayYaml = explode("\n",$yaml);
@@ -88,8 +23,6 @@ class YamlService{
         $arrayTrans = [];
 
         $arrayTrans = $this->processYaml($arrayTrans, $i, 0, $arrayYaml)["array"];
-
-//        die(VarDumper::dump($arrayTrans));
 
         return $arrayTrans;
 
@@ -129,7 +62,6 @@ class YamlService{
             $multiligne = $res["multiligne"];
             $trans['ind'] = $indentation;
             $array[] = $trans;
-
         }else{
             if(!ctype_space($word) && $word != "\r"){
                 $translated = $this->getTransaltion($word, "FR", "EN");
@@ -171,16 +103,46 @@ class YamlService{
     public function generateTranslationFile($data, $kernel)
     {
         $now = new \DateTime();
-
         $file = $kernel->getProjectDir() . "/public/translationFiles/";
         $name = 'yaml-translator-' . $now->getTimestamp() .'.fr.yaml';
 
         $stream = fopen($file . $name , 'w+');
         if ($stream) {
-            foreach ($data as $ligne) {
+            function loop($array, $stream)
+            {
+                $key = null;
+                $val = null;
+                $ind = null;
+
+                foreach ($array as $idx => $d){
+                    if($idx <= 1 || $idx == "ind"){
+                        if($idx == 0){
+                            $key = str_replace("->", "", $d);
+                        }elseif($idx == 1){
+                            $val = $d;
+                        }elseif ($idx == "ind"){
+                            $ind = $d > 0 ? str_repeat(" ", $d) : "";
+                        }
+                    }
+                }
+                $ligne =  $ind . ($val != null ? $key . " : ". $val : $key);
                 fwrite($stream, $ligne);
                 fwrite($stream, "\n");
+
+                foreach ($array as $idx => $d){
+                    if ($idx > 1 ){
+                        if(is_array($d)){
+                            loop($d, $stream);
+                        }
+                    }
+                }
+
+                return $ligne;
             }
+            foreach ($data as $index => $array){
+               loop($array, $stream);
+            }
+
             fclose($stream);
 
             return $file . $name;
@@ -227,7 +189,7 @@ class YamlService{
             $pem = $this->kernel->getProjectDir() . '\cacert.pem';
 
             $url = 'https://api.mymemory.translated.net/';
-            $fullUrl = $url . 'get?q='.$word.'&langpair=' . $original. '|' . $target ;
+            $fullUrl = $url . 'get?q='.$word.'&langpair=' . $original. '|' . $target ."&de=shishou@gmail.com";
             $client = new Client([
                 'verify' => $pem,
                 'base_uri' => $url,

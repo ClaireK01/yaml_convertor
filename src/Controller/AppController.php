@@ -38,7 +38,6 @@ class AppController extends AbstractController
                 if($response['status'] == 200){
                     $yaml = $response['path'];
                     $arrayTrans = $yamlService->handleYaml($yaml, $yamlFile->getOriginalanguage(), $yamlFile->getTargetLanguage());
-
                     if(count($arrayTrans) < 300 /* && !$this->getUser() || $this->getUser() ---- limite de ligne pour les non-abonnées */){
                         $fileTranslated = $yamlService->generateTranslationFile($arrayTrans, $kernel);
                         if($fileTranslated){
