@@ -16,87 +16,84 @@ class YamlService{
     }
 
 
-    public function handleYaml(string $path, string $original, string $target){
-
-        $yaml = file_get_contents($path);
-        $array = explode("\n", $yaml);
-        $arrayTrans = [];
-
-        $key = null;
-        $multiline = false;
-
-        foreach ($array as $line){
-
-            $word = $multiline ? [$line] : explode(':', $line);
-            $word = str_replace(["\r"], " ", $word);
-//            $word = str_replace(" ", "->", $word);
-            $word = preg_replace("#^[\s.]+#", "->", $word);
-
-            if((key_exists(1, $word) && !ctype_space($word[1]) && $word[1] != "->") ||  (!key_exists(1, $word) && $multiline) ){
-
-                if(!$multiline){
-                    $multiline = str_contains($word[1], "|");
-                    $wordToTranslate = $word[1];
-                    preg_match("#^[->.]+#", $word[1], $matches);
-                }else{
-                    $wordToTranslate = $word[0];
-                    $matchReg = preg_match("#^[->.]+#", $word[0], $matches);
-                    if($matchReg == 0){
-                        $multiline = false;
-                    }
-                }
-                $indentation = count($matches) > 0 ? $matches[0] : '';
-
-                if($wordToTranslate != "" && $wordToTranslate != "->" && !ctype_space($wordToTranslate) ){
-
-                    $json = $this->getTransaltion(str_replace('->', '', $wordToTranslate), $original, $target);
-                    $trans = null;
-
-                    //faire un array reduce ou un truc du genre?
-                    foreach ($json->matches as $m){
-                        if($trans == null){
-                            $trans = $m;
-                        }else if($trans instanceof \stdClass && $m->match > $trans->match){
-                            $m->match = $trans->match;
-                            $trans = $m;
-                        }
-                    }
-
-                    if(!$multiline || ( key_exists(1, $word) && $multiline && str_contains($word[1], "|") ) ){
-                        $key = $word[0];
-                        $arrayTrans[] = $key . " : " . $trans->translation;
-                    }else{
-                        $arrayTrans[] = $indentation. $trans->translation;
-                    }
-                }
-
-            }else{
-                if($word[0] != "" && !ctype_space($word[0]) && $word[0] != "->"){
-                    $arrayTrans[] = $word[0] . " : " ;
-                }
-            }
-        }
-
-        return  str_replace('->', ' ', $arrayTrans);
-    }
+//    public function handleYaml(string $path, string $original, string $target){
+//
+//        $yaml = file_get_contents($path);
+//        $array = explode("\n", $yaml);
+//        $arrayTrans = [];
+//
+//        $key = null;
+//        $multiline = false;
+//
+//        foreach ($array as $line){
+//
+//            $word = $multiline ? [$line] : explode(':', $line);
+//            $word = str_replace(["\r"], " ", $word);
+////            $word = str_replace(" ", "->", $word);
+//            $word = preg_replace("#^[\s.]+#", "->", $word);
+//
+//            if((key_exists(1, $word) && !ctype_space($word[1]) && $word[1] != "->") ||  (!key_exists(1, $word) && $multiline) ){
+//
+//                if(!$multiline){
+//                    $multiline = str_contains($word[1], "|");
+//                    $wordToTranslate = $word[1];
+//                    preg_match("#^[->.]+#", $word[1], $matches);
+//                }else{
+//                    $wordToTranslate = $word[0];
+//                    $matchReg = preg_match("#^[->.]+#", $word[0], $matches);
+//                    if($matchReg == 0){
+//                        $multiline = false;
+//                    }
+//                }
+//                $indentation = count($matches) > 0 ? $matches[0] : '';
+//
+//                if($wordToTranslate != "" && $wordToTranslate != "->" && !ctype_space($wordToTranslate) ){
+//
+//                    $json = $this->getTransaltion(str_replace('->', '', $wordToTranslate), $original, $target);
+//                    $trans = null;
+//
+//                    //faire un array reduce ou un truc du genre?
+//                    foreach ($json->matches as $m){
+//                        if($trans == null){
+//                            $trans = $m;
+//                        }else if($trans instanceof \stdClass && $m->match > $trans->match){
+//                            $m->match = $trans->match;
+//                            $trans = $m;
+//                        }
+//                    }
+//
+//                    if(!$multiline || ( key_exists(1, $word) && $multiline && str_contains($word[1], "|") ) ){
+//                        $key = $word[0];
+//                        $arrayTrans[] = $key . " : " . $trans->translation;
+//                    }else{
+//                        $arrayTrans[] = $indentation. $trans->translation;
+//                    }
+//                }
+//
+//            }else{
+//                if($word[0] != "" && !ctype_space($word[0]) && $word[0] != "->"){
+//                    $arrayTrans[] = $word[0] . " : " ;
+//                }
+//            }
+//        }
+//
+//        return  str_replace('->', ' ', $arrayTrans);
+//    }
     
-    public function handleYaml2(string $path, string $original, string $target){
+    public function handleYaml(string $path, string $original, string $target){
         $yaml = file_get_contents($path);
         $arrayYaml = explode("\n",$yaml);
-//        $arrayYaml = str_replace(" ", '->', $arrayYaml);
         $arrayYaml = preg_replace("#(?<!\S.)( )#", '->', $arrayYaml);
         $i = 0;
         $arrayTrans = [];
 
-        $arrayTrans = $this->getBlock($arrayTrans, $i, 0, $arrayYaml)["array"];
+        $arrayTrans = $this->processYaml($arrayTrans, $i, 0, $arrayYaml)["array"];
 
         die(VarDumper::dump($arrayTrans));
 
-        die(VarDumper::dump($res));
-
     }
 
-    public function getBlock($array, $index, $indentation, $yaml, $multiligne = false, $multi = null){
+    public function processYaml($array, $index, $indentation, $yaml, $multiligne = false, $multi = null){
         //recuperation ligne actu, prec et suiv
         $prev = key_exists($index - 1, $yaml) ? $yaml[$index - 1] : null;
         $ligne = $yaml[$index];
@@ -107,7 +104,7 @@ class YamlService{
         $matchDesindentationNextLine =  preg_match("#^(?<!->)(->){0,". $indentation - 2 ."}(?!->)#", $next, $match);
 
         if(!ctype_space($ligne) && $ligne != "\r" && $ligne != ""){
-            $trans = $multiligne ? [$ligne] : explode(':', $ligne);
+            $trans = $multiligne ? [$ligne] : preg_split("#(:)#", $ligne, 2);
             $word = $multiligne ? $trans[0] : $trans[1];
         }else{
             $trans = [$ligne, $ligne];
@@ -123,12 +120,13 @@ class YamlService{
                 $multiligne = false;
             }
 
-            $res = $this->getBlock($trans, $index, $indentation, $yaml, $multiligne);
+            $res = $this->processYaml($trans, $index, $indentation, $yaml, $multiligne);
             $trans = $res["array"];
             $index = $res['index'];
             $indentation = $res["indentation"];
             $multiligne = $res["multiligne"];
             $array[] = $trans;
+
         }else{
             if(!ctype_space($word) && $word != "\r"){
                 $translated = $this->getTransaltion(str_replace('->', " ", $word), "FR", "EN");
@@ -152,7 +150,7 @@ class YamlService{
         }
 
         if(key_exists($index, $yaml) && $matchDesindentationNextLine == 0) {
-            $res = $this->getBlock($array, $index, $indentation, $yaml, $multiligne);
+            $res = $this->processYaml($array, $index, $indentation, $yaml, $multiligne);
             $index = $res["index"];
             $array = $res["array"];
             $indentation = $res["indentation"];
@@ -205,8 +203,6 @@ class YamlService{
         $name = str_replace($search, '_', $name);
         $name = str_replace(" ", "_", $name);
 
-//        VarDumper::dump($file->getClientOriginalName());
-
         if (in_array(strtolower($file->getClientOriginalExtension()), $allowed)) {
 //            if (file_exists($src . $name)) {
                 $name = $now->format('U') . '-' . $name;
@@ -238,8 +234,7 @@ class YamlService{
 
             $json = json_decode($output);
             $trans = null;
-            //faire un array reduce ou un truc du genre?
-            try{
+            //faire un array reduce
                 foreach ($json->matches as $m){
                     if($trans == null){
                         $trans = $m;
@@ -248,18 +243,11 @@ class YamlService{
                         $trans = $m;
                     }
                 }
-            }catch(\Exception $e){
-                VarDumper::dump($trans);
-                VarDumper::dump($json);
-                die;
-            }
-
 
             return $trans->translation;
         }
 
         return "";
-
     }
 
 

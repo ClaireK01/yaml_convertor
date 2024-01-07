@@ -1,4 +1,4 @@
-
+home: "nouvelle options disponible : acceuil"
 product:
   name:  Produit
   ref: |
@@ -20,7 +20,7 @@ product:
     promote: Promos
 
 nav:
-  home: Accueil
+  home: "nouvelle options disponible : acceuil"
   qui: Qui sommes-nous
   magasin: Notre magasin
   shop: Notre boutique
