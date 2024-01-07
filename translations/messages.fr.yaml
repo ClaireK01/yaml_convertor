@@ -1,7 +1,8 @@
+
 product:
-  name: Produit
+  name:  Produit
   ref: |
-    Référence : %ref%
+    Référence %ref%
   new: Nouveau
   see: Voir la fiche produit %product%
   desc: Description du produit

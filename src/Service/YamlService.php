@@ -9,7 +9,11 @@ use Symfony\Component\VarDumper\VarDumper;
 
 class YamlService{
 
-    public  function __construct(){}
+    private $kernel;
+
+    public  function __construct(KernelInterface $kernel){
+        $this->kernel = $kernel;
+    }
 
 
     public function handleYaml(string $path, string $original, string $target){
@@ -78,51 +82,89 @@ class YamlService{
     
     public function handleYaml2(string $path, string $original, string $target){
         $yaml = file_get_contents($path);
-        $array = explode("\n",$yaml);
-        $array = str_replace(" ", '->', $array);
+        $arrayYaml = explode("\n",$yaml);
+//        $arrayYaml = str_replace(" ", '->', $arrayYaml);
+        $arrayYaml = preg_replace("#(?<!\S.)( )#", '->', $arrayYaml);
         $i = 0;
         $arrayTrans = [];
 
-        $res = $this->getBlock($array, $i, 0);
-        foreach($res['arr'] as $b){
-            $arrayTrans[] = $this->getArrayFromBlockValue($b);
-        }
+        $arrayTrans = $this->getBlock($arrayTrans, $i, 0, $arrayYaml)["array"];
 
         die(VarDumper::dump($arrayTrans));
 
         die(VarDumper::dump($res));
 
     }
-    
-    public function getBlock($array, $index, $indentation){
-        
-/*        die(VarDumper::dump($array));*/
-        $pause = false;
-        $bloc = [];
-        $bloc[] = $array[$index];
-        $index++;
-        $arrows = str_repeat("->", $indentation + 1);
-        do{
-            $nbMatches = preg_match("#^[ ->.]{".($indentation + 1 ).",}#", $array[$index]);
-            //faire passer l'indentation (actuellemnt a 0) en param
-            if($nbMatches == 1 || $array[$index] == "\r"){
-                $bloc[] = $array[$index];
+
+    public function getBlock($array, $index, $indentation, $yaml, $multiligne = false, $multi = null){
+        //recuperation ligne actu, prec et suiv
+        $prev = key_exists($index - 1, $yaml) ? $yaml[$index - 1] : null;
+        $ligne = $yaml[$index];
+        $next = key_exists($index + 1, $yaml) ? $yaml[$index + 1] : null;
+
+        //check si indentation
+        $matchIndentationNextLine = preg_match("#^(?<!->)(->){". $indentation + 2 .",}(?!->)#", $next);
+        $matchDesindentationNextLine =  preg_match("#^(?<!->)(->){0,". $indentation - 2 ."}(?!->)#", $next, $match);
+
+        if(!ctype_space($ligne) && $ligne != "\r" && $ligne != ""){
+            $trans = $multiligne ? [$ligne] : explode(':', $ligne);
+            $word = $multiligne ? $trans[0] : $trans[1];
+        }else{
+            $trans = [$ligne, $ligne];
+            $word = $trans[0] ;
+        }
+
+        if($matchIndentationNextLine == 1) {
+            $indentation += 2;
+            $index++;
+            if(!$multiligne && str_replace([" ", "\s", "\r"], "", $trans[1]) == "|"){
+                $multiligne = true;
+            }elseif($multiligne && $matchDesindentationNextLine == 1){
+                $multiligne = false;
+            }
+
+            $res = $this->getBlock($trans, $index, $indentation, $yaml, $multiligne);
+            $trans = $res["array"];
+            $index = $res['index'];
+            $indentation = $res["indentation"];
+            $multiligne = $res["multiligne"];
+            $array[] = $trans;
+        }else{
+            if(!ctype_space($word) && $word != "\r"){
+                $translated = $this->getTransaltion(str_replace('->', " ", $word), "FR", "EN");
+                if(!$multiligne){
+                    $trans[1] = $translated;
+                }else{
+                    $trans[0] = $translated;
+                }
+                //multiligne pr prochaine
+                if(!$multiligne && str_replace(["\w", "->", "\r"], "", $trans[1]) == "|"){
+                    $multiligne = true;
+                }elseif($multiligne && $matchDesindentationNextLine == 1){
+                    $multiligne = false;
+                }
+                $array[] = $trans;
                 $index++;
             }else{
-                $pause = true;
+                $array[] = $trans;
+                $index++;
             }
-        }while(!$pause);
-        
-        return ['index' => $index, 'arr' => $bloc];
-    }
+        }
 
-    public function getArrayFromBlockValue($string){
-        $string =  preg_replace("#^[->.]+#", "", $string);
-        //prendre seulement le premier :
-        $arr = explode(':', $string);
-        return $arr;
-    }
+        if(key_exists($index, $yaml) && $matchDesindentationNextLine == 0) {
+            $res = $this->getBlock($array, $index, $indentation, $yaml, $multiligne);
+            $index = $res["index"];
+            $array = $res["array"];
+            $indentation = $res["indentation"];
+            $multiligne = $res["multiligne"];
+        }
 
+        if($matchDesindentationNextLine == 1){
+            $indentation -= 2;
+        }
+
+        return ["array" => $array, "index" => $index, 'indentation' => $indentation, 'multiligne' => $multiligne];
+    }
 
     public function generateTranslationFile($data, $kernel)
     {
@@ -163,13 +205,15 @@ class YamlService{
         $name = str_replace($search, '_', $name);
         $name = str_replace(" ", "_", $name);
 
+//        VarDumper::dump($file->getClientOriginalName());
+
         if (in_array(strtolower($file->getClientOriginalExtension()), $allowed)) {
-            if (file_exists($src . $name)) {
+//            if (file_exists($src . $name)) {
                 $name = $now->format('U') . '-' . $name;
                 $file->move($src, $name);
 
                 return ["status" => 200, 'path' => $src.$name];
-            }
+//            }
         }
 
         return ["status" => 500, 'message' => "Format non valide. Les formats accepté sont : yaml, yml"];
@@ -178,17 +222,44 @@ class YamlService{
 
     public function getTransaltion($word, $original, $target){
 
-        $url = 'https://api.mymemory.translated.net/';
-        $fullUrl = $url . 'get?q='.$word.'&langpair=' . $original. '|' . $target ;
-        $client = new Client([
-            'verify' => 'C:\Program Files\Common Files\SSL\cert.pem',
-            'base_uri' => $url,
-            'timeout' => 2.0,
-        ]);
 
-        $output = $client->get($fullUrl)->getBody()->getContents();
+        if($word != ""){
+            $pem = $this->kernel->getProjectDir() . '\cacert.pem';
 
-        return json_decode($output);
+            $url = 'https://api.mymemory.translated.net/';
+            $fullUrl = $url . 'get?q='.$word.'&langpair=' . $original. '|' . $target ;
+            $client = new Client([
+                'verify' => $pem,
+                'base_uri' => $url,
+                'timeout' => 2.0,
+            ]);
+
+            $output = $client->get($fullUrl)->getBody()->getContents();
+
+            $json = json_decode($output);
+            $trans = null;
+            //faire un array reduce ou un truc du genre?
+            try{
+                foreach ($json->matches as $m){
+                    if($trans == null){
+                        $trans = $m;
+                    }else if($trans instanceof \stdClass && $m->match > $trans->match){
+                        $m->match = $trans->match;
+                        $trans = $m;
+                    }
+                }
+            }catch(\Exception $e){
+                VarDumper::dump($trans);
+                VarDumper::dump($json);
+                die;
+            }
+
+
+            return $trans->translation;
+        }
+
+        return "";
+
     }
 
 
