@@ -89,11 +89,13 @@ class YamlService{
 
         $arrayTrans = $this->processYaml($arrayTrans, $i, 0, $arrayYaml)["array"];
 
-        die(VarDumper::dump($arrayTrans));
+//        die(VarDumper::dump($arrayTrans));
+
+        return $arrayTrans;
 
     }
 
-    public function processYaml($array, $index, $indentation, $yaml, $multiligne = false, $multi = null){
+    public function processYaml($array, $index, $indentation, $yaml, $multiligne = false){
         //recuperation ligne actu, prec et suiv
         $prev = key_exists($index - 1, $yaml) ? $yaml[$index - 1] : null;
         $ligne = $yaml[$index];
@@ -125,11 +127,12 @@ class YamlService{
             $index = $res['index'];
             $indentation = $res["indentation"];
             $multiligne = $res["multiligne"];
+            $trans['ind'] = $indentation;
             $array[] = $trans;
 
         }else{
             if(!ctype_space($word) && $word != "\r"){
-                $translated = $this->getTransaltion(str_replace('->', " ", $word), "FR", "EN");
+                $translated = $this->getTransaltion($word, "FR", "EN");
                 if(!$multiligne){
                     $trans[1] = $translated;
                 }else{
@@ -141,6 +144,7 @@ class YamlService{
                 }elseif($multiligne && $matchDesindentationNextLine == 1){
                     $multiligne = false;
                 }
+                $trans['ind'] = $indentation;
                 $array[] = $trans;
                 $index++;
             }else{

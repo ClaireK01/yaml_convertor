@@ -1,6 +1,6 @@
 home: "nouvelle options disponible : acceuil"
 product:
-  name:  Produit
+  name:  Produit -> Voir les nouveau produit
   ref: |
     Référence %ref%
   new: Nouveau
