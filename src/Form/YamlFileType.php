@@ -55,7 +55,7 @@ class YamlFileType extends AbstractType
                 ]
             ])
             ->add('concatenation', CheckboxType::class, [
-                'label' => "Rassemblez les valeur sur plusieurs ligne en une seul",
+                'label' => "Rassemblez les valeurs réparties sur plusieurs lignes en une seul",
                 "required" => false,
             ])
         ;
