@@ -3,6 +3,12 @@ product:
   name:  Produit -> Voir les nouveau produit
   ref: |
     Référence %ref%
+    Bonjour le problème est désormais
+    réglé
+    
+    SALUT,
+    
+    Je mappelle claire
   new: Nouveau
   see: Voir la fiche produit %product%
   desc: Description du produit
@@ -28,13 +34,3 @@ nav:
   contact: Nous contacter
   legal: Mentions légales
   cookies: Utilisation des cookies
-
-
-
-site: Phénix shoes
-backh: Retour à l'accueil
-back: Retour
-menu: Menu
-close: Fermer
-send: Envoyer
-inscrire: S'inscrire

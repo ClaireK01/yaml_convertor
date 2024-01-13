@@ -28,22 +28,25 @@ class AppController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid()){
 
+            $yamlService->setOrginal($yamlFile->getOriginalanguage());
+            $yamlService->setTarget($yamlFile->getTargetLanguage());
+            $yamlService->setSpace($yamlFile->getSpace());
+
             $file = $yamlFile->getFile();
 
             //check type form
             if($file instanceof UploadedFile){
-                $response = $yamlService->uploadFile($file, $kernel);
+                $response = $yamlService->uploadFile($file);
 
                 //check type dans nom fichier
                 if($response['status'] == 200){
                     $yaml = $response['path'];
-                    $arrayTrans = $yamlService->handleYaml($yaml, $yamlFile->getOriginalanguage(), $yamlFile->getTargetLanguage());
+                    $arrayTrans = $yamlService->handleYaml($yaml, $yamlFile->getConcatenation());
                     if(count($arrayTrans) < 300 /* && !$this->getUser() || $this->getUser() ---- limite de ligne pour les non-abonnées */){
                         $fileTranslated = $yamlService->generateTranslationFile($arrayTrans, $kernel);
                         if($fileTranslated){
                             return $this->file($fileTranslated);
                         }
-
                     }else{
                         $error = new FormError("Votre fichier dépasse le nombre de ligne maximum pour un compte basique. Passez à un abonnement premium pour un plus grand nombre de traduction !");
                         $form->get('file')->addError($error);

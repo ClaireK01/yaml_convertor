@@ -35,16 +35,28 @@ class YamlFileType extends AbstractType
                 'choices' => [
                     "EN" => "EN",
                     "FR" => "FR",
+                    "IT" => "IT",
                 ],
                 'label' => "Language à traduire"
             ])
-
             ->add('targetLanguage', ChoiceType::class, [
                 'choices' => [
                     "EN" => "EN",
                     "FR" => "FR",
+                    "IT" => "IT",
                 ],
                 'label' => "Language de traduction"
+            ])
+            ->add("space", ChoiceType::class, [
+                "label" => "Type d'indentation",
+                'choices' => [
+                    "Tab" => 2,
+                    "Espace" => 1,
+                ]
+            ])
+            ->add('concatenation', CheckboxType::class, [
+                'label' => "Rassemblez les valeur sur plusieurs ligne en une seul",
+                "required" => false,
             ])
         ;
     }

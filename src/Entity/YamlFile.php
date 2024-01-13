@@ -34,6 +34,13 @@ class YamlFile{
      */
     private $targetLanguage;
 
+    /**
+     * @Assert\NotNull(message="Cette valeur ne peut pas être null")
+     */
+    private $space = 2;
+
+
+    private $concatenation;
 
     /**
      * @return mixed
@@ -81,6 +88,38 @@ class YamlFile{
     public function setTargetLanguage($targetLanguage): void
     {
         $this->targetLanguage = $targetLanguage;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSpace(): int
+    {
+        return $this->space;
+    }
+
+    /**
+     * @param int $space
+     */
+    public function setSpace(int $space): void
+    {
+        $this->space = $space;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConcatenation()
+    {
+        return $this->concatenation;
+    }
+
+    /**
+     * @param mixed $concatenation
+     */
+    public function setConcatenation($concatenation): void
+    {
+        $this->concatenation = $concatenation;
     }
 
 
