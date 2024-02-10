@@ -1,14 +1,14 @@
 home: "nouvelle options disponible : acceuil"
+drop: Placer votre fichier ici !
 product:
   name:  Produit -> Voir les nouveau produit
   ref: |
     Référence %ref%
     Bonjour le problème est désormais
     réglé
-    
     SALUT,
-    
     Je mappelle claire
+
   new: Nouveau
   see: Voir la fiche produit %product%
   desc: Description du produit

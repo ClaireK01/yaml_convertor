@@ -1,0 +1,28 @@
+
+{% block form_widget_simple %}
+    {% set type = type|default('text') %}
+    <input style="padding:2rem" type="{{ type }}" value="{{ value is defined ? value : null }}">
+{% endblock %}
+
+{% block choice_row %}
+    <div class="select-opt">
+        <div>
+            <label for="{{ name }}">{{ label }}</label>
+        </div>
+        <select>
+            {% for choice in choices %}
+                <option value="{{ choice.value }}" class="choice">{{ choice.value }}</option>
+            {% endfor %}
+        </select>
+    </div>
+{% endblock %}
+
+{% block file_row %}
+    <div class="file">
+        <input type="{{ type }}" value="{{ value is defined ? value : null }}">
+    </div>
+{% endblock %}
+
+{% block checkbox_row %}
+    <input type="checkbox"> <label for="{{ name }}">{{ label }}</label>
+{% endblock %}

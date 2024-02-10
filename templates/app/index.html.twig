@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% form_theme form 'form/theme/_form_theme.html.twig' %}
 
 {% block title %}Hello AppController!{% endblock %}
 
@@ -6,7 +7,15 @@
 
     <div class="container my-5">
         {{ form_start(form) }}
-        {{ form_widget(form) }}
+        <div class="form-content">
+            {{ form_widget(form) }}
+            <div id="drop_zone"
+                 ondrop="dropHandler(event);"
+                 ondragover="dragOverHandler(event);">
+                <p>{{ 'drop'|trans }}</p>
+            </div>
+        </div>
+
         <button type="submit" class="btn btn-warning">Traduire</button>
         {{ form_end(form) }}
     </div>
