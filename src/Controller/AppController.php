@@ -6,6 +6,7 @@ use App\Entity\YamlFile;
 use App\Form\YamlFileType;
 use App\Service\YamlService;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Statickidz\GoogleTranslate;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -18,6 +19,7 @@ use Symfony\Component\VarDumper\VarDumper;
 
 class AppController extends AbstractController
 {
+
     #[Route('/', name: 'app_homepage')]
     public function index(Request $request, KernelInterface $kernel, YamlService $yamlService): Response
     {
@@ -27,7 +29,6 @@ class AppController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
-
             $yamlService->setOrginal($yamlFile->getOriginalanguage());
             $yamlService->setTarget($yamlFile->getTargetLanguage());
             $yamlService->setSpace($yamlFile->getSpace());
@@ -41,23 +42,27 @@ class AppController extends AbstractController
                 //check type dans nom fichier
                 if($response['status'] == 200){
                     $yaml = $response['path'];
-                    $arrayTrans = $yamlService->handleYaml($yaml, $yamlFile->getConcatenation());
-                    if(count($arrayTrans) < 300 /* && !$this->getUser() || $this->getUser() ---- limite de ligne pour les non-abonnées */){
-                        $fileTranslated = $yamlService->generateTranslationFile($arrayTrans, $kernel);
-                        if($fileTranslated){
-                            return $this->file($fileTranslated);
+                    try{
+                        $arrayTrans = $yamlService->handleYaml($yaml, $yamlFile->getConcatenation());
+                        if(count($arrayTrans) < 300 /* && !$this->getUser() || $this->getUser() ---- limite de ligne pour les non-abonnées */){
+                                $fileTranslated = $yamlService->generateTranslationFile($arrayTrans, $kernel);
+                                if($fileTranslated){
+                                    return $this->file($fileTranslated);
+                                }
+                        }else{
+                            $error = new FormError("Votre fichier dépasse le nombre de ligne maximum pour un compte basique. Passez à un abonnement premium pour un plus grand nombre de traduction !");
+                            $form->get('file')->addError($error);
                         }
-                    }else{
-                        $error = new FormError("Votre fichier dépasse le nombre de ligne maximum pour un compte basique. Passez à un abonnement premium pour un plus grand nombre de traduction !");
-                        $form->get('file')->addError($error);
+                    }catch(\Exception $e){
+                        if($e instanceof ClientException){
+                            $this->addFlash('file.error', "Une erreur est survenue lors du traitement de votre fichier (Usage max. API dépassé). Veuillez réesayer plus tard");
+                        }else{
+                            $this->addFlash('file.error', "Une erreur est survenue lors du traitement de votre fichier. Veuillez réesayer plus tard.");
+                        }
                     }
                 }else{
-                    $error = new FormError($response['message']);
-                    $form->get('file')->addError($error);
+                    $this->addFlash('file.error', $response['message']);
                 }
-            }else{
-                $error = new FormError('Format du fichier invalide.');
-                $form->get('file')->addError($error);
             }
         }
 
@@ -65,5 +70,12 @@ class AppController extends AbstractController
             'controller_name' => 'AppController',
             'form' => $form->createView(),
         ]);
+    }
+
+//    //mise en place requete ajax pour loader
+    #[Route('/', name: 'app_yaml_process', methods: ['GET', 'POST'])]
+    public function processYamlAction(Request $request, KernelInterface $kernel, YamlService $yamlService)
+    {
+        return $this->json(['test'], 200);
     }
 }

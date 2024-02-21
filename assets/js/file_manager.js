@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 
 $('#myframe').on('load', function () {
     $(this).contents().on('click','.select',function () {

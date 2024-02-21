@@ -1,28 +1,36 @@
 
-{% block form_widget_simple %}
-    {% set type = type|default('text') %}
-    <input style="padding:2rem" type="{{ type }}" value="{{ value is defined ? value : null }}">
-{% endblock %}
+{#{% block form_widget_simple %}#}
+{#    {% set type = type|default('text') %}#}
+{#    <input style="padding:2rem" type="{{ type }}" value="{{ value is defined ? value : null }}">#}
+{#{% endblock %}#}
 
 {% block choice_row %}
     <div class="select-opt">
         <div>
-            <label for="{{ name }}">{{ label }}</label>
+            <label for="yaml_file[{{ name }}]">{{ label }}</label>
         </div>
-        <select>
-            {% for choice in choices %}
-                <option value="{{ choice.value }}" class="choice">{{ choice.value }}</option>
-            {% endfor %}
+        {% for error in errors %}
+            <div class="form-error">{{ error.message }}</div>
+        {% endfor %}
+        <select  name="yaml_file[{{ name }}]">
+            <div>
+                {% for choice in choices %}
+                    <option value="{{ choice.value }}" class="choice">{{ choice.label }}</option>
+                {% endfor %}
+            </div>
         </select>
     </div>
 {% endblock %}
 
 {% block file_row %}
     <div class="file">
-        <input type="{{ type }}" value="{{ value is defined ? value : null }}">
+        <label for="yaml_file[{{ name }}]">{{ label }}</label>
+        <input  name="yaml_file[{{ name }}]" type="{{ type }}" value="{{ value is defined ? value : null }}">
     </div>
 {% endblock %}
 
 {% block checkbox_row %}
-    <input type="checkbox"> <label for="{{ name }}">{{ label }}</label>
+    <div class="checkbox">
+        <input  name="yaml_file[{{ name }}]" type="checkbox"> <label for="yaml_file[{{ name }}]">{{ label }}</label>
+    </div>
 {% endblock %}

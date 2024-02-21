@@ -64,7 +64,7 @@ class YamlService{
 
         if(!ctype_space($ligne) && $ligne != "\r" && $ligne != ""){
             $trans = $multiligne ? [$ligne] : preg_split("#(:)#", $ligne, 2);
-            $word = $multiligne ? $trans[0] : $trans[1];
+            $word = $multiligne || !key_exists(1, $trans) ? $trans[0] : $trans[1];
         }else{
             $trans = [$ligne, $ligne];
             $word = $trans[0] ;
@@ -73,7 +73,7 @@ class YamlService{
         if($matchIndentationNextLine == 1) {
             $indentation += $space;
             $index++;
-            if(!$multiligne && str_replace([" ", "\s", "\r"], "", $trans[1]) == "|"){
+            if(!$multiligne && key_exists(1, $trans) && str_replace([" ", "\s", "\r"], "", $trans[1]) == "|"){
                 $multiligne = true;
             }elseif($multiligne && $matchDesindentationNextLine == 1){
                 $multiligne = false;
@@ -85,17 +85,24 @@ class YamlService{
             $indentation = $res["indentation"];
             $multiligne = $res["multiligne"];
             $trans['ind'] = $indentation;
+//            VarDumper::dump($word);
+//            VarDumper::dump($array);
+//            if(key_exists(1, $array) && !is_iterable($array[1])){
+//                $translated = $this->getTranslation($array[1], "FR", "EN");
+//                $array[1] = $translated;
+//                VarDumper::dump($array[1]);
+//            }
             $array[] = $trans;
         }else{
             if(!ctype_space($word) && $word != "\r"){
                 $translated = $this->getTranslation($word, "FR", "EN");
-                if(!$multiligne){
+                if(!$multiligne && key_exists(1, $trans)){
                     $trans[1] = $translated;
                 }else{
                     $trans[0] = $translated;
                 }
                 //multiligne pr prochaine
-                if(!$multiligne && str_replace(["\w", "->", "\r"], "", $trans[1]) == "|"){
+                if(!$multiligne && key_exists(1, $trans) && str_replace(["\w", "->", "\r"], "", $trans[1]) == "|"){
                     $multiligne = true;
                 }elseif($multiligne && $matchDesindentationNextLine == 1){
                     $multiligne = false;
@@ -126,6 +133,7 @@ class YamlService{
 
     public function generateTranslationFile($data, $kernel)
     {
+//        die(VarDumper::dump($data));
         $now = new \DateTime();
         $file = $kernel->getProjectDir() . "/public/translationFiles/";
         $name = 'yaml-translator-' . $now->getTimestamp() .'.fr.yaml';
@@ -199,28 +207,26 @@ class YamlService{
         $name = str_replace(" ", "_", $name);
 
         if (in_array(strtolower($file->getClientOriginalExtension()), $allowed)) {
-//            if (file_exists($src . $name)) {
                 $name = $now->format('U') . '-' . $name;
                 $file->move($src, $name);
 
                 return ["status" => 200, 'path' => $src.$name];
-//            }
         }
 
-        return ["status" => 500, 'message' => "Format non valide. Les formats accepté sont : yaml, yml"];
+        return ["status" => 500, 'message' => "Format non valide. Les formats acceptés sont : yaml, yml"];
 
     }
 
     public function getTranslation($word){
         if($word != ""){
-            $pem = $this->kernel->getProjectDir() . '\cacert.pem';
+            $pem = $this->kernel->getProjectDir() . '/cacert.pem';
 
             $url = 'https://api.mymemory.translated.net/';
             $fullUrl = $url . 'get?q='.$word.'&langpair=' . $this->original. '|' . $this->target ."&de=shishou@gmail.com";
             $client = new Client([
                 'verify' => $pem,
                 'base_uri' => $url,
-                'timeout' => 2.0,
+                'timeout' => 6.0,
             ]);
 
             $output = $client->get($fullUrl)->getBody()->getContents();

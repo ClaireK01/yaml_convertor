@@ -1,3 +1,8 @@
+all:
+  translate: Traduire
+  drop: Cliquez ou déposez un fichier
+  nofile: Aucun fichier déposé
+
 home: "nouvelle options disponible : acceuil"
 drop: Placer votre fichier ici !
 product:
@@ -34,3 +39,6 @@ nav:
   contact: Nous contacter
   legal: Mentions légales
   cookies: Utilisation des cookies
+
+
+developed : <small>Développé avec  <i class="fas fa-heart"></i> par</small>

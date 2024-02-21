@@ -1,22 +1,28 @@
 {% extends 'base.html.twig' %}
 {% form_theme form 'form/theme/_form_theme.html.twig' %}
+{% trans_default_domain 'messages' %}
 
-{% block title %}Hello AppController!{% endblock %}
+{% block title %}YamlConvertor{% endblock %}
 
 {% block body %}
 
     <div class="container my-5">
-        {{ form_start(form) }}
-        <div class="form-content">
-            {{ form_widget(form) }}
-            <div id="drop_zone"
-                 ondrop="dropHandler(event);"
-                 ondragover="dragOverHandler(event);">
-                <p>{{ 'drop'|trans }}</p>
+        <h1>YamlConvertor_</h1>
+        {% for m in app.flashes('file.error') %}
+            <div class="div-message">
+                <p>{{ m }}</p>
             </div>
+        {% endfor %}
+        {{ form_start(form) }}
+        <div class="form-content" data-url="{{ path('app_yaml_process') }}">
+            {{ form_widget(form) }}
+                <div id="drop_zone">
+                    <p>{{ 'all.drop'|trans }}</p>
+                    <p class="file-name">{{ 'all.nofile'|trans }}</p>
+                </div>
         </div>
-
-        <button type="submit" class="btn btn-warning">Traduire</button>
+            <div style="position: absolute; right: 10rem" class="form-error">{{ form_errors(form.file) }}</div>
+        <button type="submit" class="btn btn-form">{{ 'all.translate'|trans}} <i class="fa fa-arrow-right"></i></button>
         {{ form_end(form) }}
     </div>
 

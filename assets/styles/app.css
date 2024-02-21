@@ -1,9 +1,30 @@
-body {
-    background-color: lightgray;
+@font-face {
+    font-family: "CodeLatin";
+    src: local("Trickster"), url("/assets/fonts/MPLUSCodeLatin.ttf") format("opentype")
 }
 
+body {
+    background: rgb(38,3,94);
+    background: linear-gradient(90deg, rgba(38,3,94,1) 0%, rgba(9,6,69,1) 25%, rgba(71,20,154,1) 100%);
+    color: lightgrey;
+}
+
+.container{
+    text-align: center;
+}
+
+h1{
+    font-family: 'CodeLatin', 'sans-serif';
+    padding: 0rem 0 5rem 0;
+    margin: auto;
+    display: inline-block;
+}
 
 /* form */
+
+form {
+    text-align: center;
+}
 
 .form-content{
     display: flex;
@@ -20,15 +41,16 @@ body {
 }
 
 .select-opt label{
+    display: none;
     font-size: 0.8rem;
-    color: darkgray;
+    color: darkgray ;
 }
 
 .select-opt select{
     margin-bottom: 1rem;
 }
 
-.file input{
+.file{
     display: none;
 }
 
@@ -40,10 +62,75 @@ body {
     padding: 3rem;
 }
 
-form {
-    text-align: center;
+#drop_zone:hover{
+    cursor: pointer;
 }
 
-form button{
+.btn-form{
     margin-top: 4rem;
+    padding : 1rem 2rem;
+    background-color: lightgrey;
+    color: black;
+    border-radius: 20rem;
+}
+
+.btn-form:hover{
+    background: linear-gradient(90deg, rgb(100, 20, 154) 0%, rgb(71, 20, 154) 58%, rgb(100, 20, 154) 93%);
+    color: lightgrey;
+}
+
+.file-name{
+    font-size: 0.9rem;
+    color: darkgray;
+}
+
+.checkbox{
+    padding: 2rem 0 0 0;
+}
+
+.form-error{
+    font-size: 0.7rem;
+    color: #f63e3e;
+}
+
+.form-error li{
+    list-style: none;
+}
+
+.div-message{
+    background: linear-gradient(90deg, rgb(100, 20, 154) 0%, rgb(71, 20, 154) 58%, rgb(100, 20, 154) 93%);
+    color: lightgray;
+    padding: 1rem;
+    border-radius: 35px;
+    margin-bottom: 3rem;
+}
+
+.div-message p{
+    margin: 0;
+}
+
+footer{
+    padding: 3rem;
+    background-color: rgba(76, 43, 93, 0);
+    display: flex;
+    justify-content: space-around;
+}
+
+@media only screen and (max-width: 1000px){
+    
+    .container{
+	    max-height : 1000px;
+	    height: 100%;
+        width: 100%;
+    }
+    .form-content{
+        flex-direction: column !important;
+    }
+
+    #drop_zone{
+        width: 80%;
+    }
+    .checkbox{
+        padding: 2rem 0;
+    }
 }

@@ -93,7 +93,7 @@ class YamlFile{
     /**
      * @return int
      */
-    public function getSpace(): int
+    public function getSpace(): ?int
     {
         return $this->space;
     }
@@ -101,7 +101,7 @@ class YamlFile{
     /**
      * @param int $space
      */
-    public function setSpace(int $space): void
+    public function setSpace(?int $space): void
     {
         $this->space = $space;
     }
