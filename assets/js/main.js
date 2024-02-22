@@ -47,14 +47,13 @@ const $app = {
                 error : function (){},
                 processData: false,
                 contentType: false,
-
             })
         })
     },
 
     init : function (){
         this.initListenners();
-        this.handleForm();
+        // this.handleForm();
     }
 }
 

@@ -73,7 +73,7 @@ class AppController extends AbstractController
     }
 
 //    //mise en place requete ajax pour loader
-    #[Route('/', name: 'app_yaml_process', methods: ['GET', 'POST'])]
+    #[Route('/process', name: 'app_yaml_process', methods: ['GET', 'POST'])]
     public function processYamlAction(Request $request, KernelInterface $kernel, YamlService $yamlService)
     {
         return $this->json(['test'], 200);

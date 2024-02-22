@@ -85,8 +85,6 @@ class YamlService{
             $indentation = $res["indentation"];
             $multiligne = $res["multiligne"];
             $trans['ind'] = $indentation;
-//            VarDumper::dump($word);
-//            VarDumper::dump($array);
 //            if(key_exists(1, $array) && !is_iterable($array[1])){
 //                $translated = $this->getTranslation($array[1], "FR", "EN");
 //                $array[1] = $translated;
