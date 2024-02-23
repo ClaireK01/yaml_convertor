@@ -43,6 +43,8 @@ class YamlService{
 
         if(!$concatMultiligne){
             $arrayTrans = $this->processYaml($arrayTrans, $i, 0, $arrayYaml)["array"];
+//            die;
+
         }else{
             $arrayTrans = $this->processYamlWithConcatMultiligne($arrayTrans, $i, 0, $arrayYaml)["array"];
         }
@@ -85,11 +87,10 @@ class YamlService{
             $indentation = $res["indentation"];
             $multiligne = $res["multiligne"];
             $trans['ind'] = $indentation;
-//            if(key_exists(1, $array) && !is_iterable($array[1])){
-//                $translated = $this->getTranslation($array[1], "FR", "EN");
-//                $array[1] = $translated;
-//                VarDumper::dump($array[1]);
-//            }
+            if($word && !ctype_space($word) && $word != "\r"){
+                $translated = $this->getTranslation($word, "FR", "EN");
+                $trans[1] = $translated;
+            }
             $array[] = $trans;
         }else{
             if(!ctype_space($word) && $word != "\r"){
@@ -131,7 +132,6 @@ class YamlService{
 
     public function generateTranslationFile($data, $kernel)
     {
-//        die(VarDumper::dump($data));
         $now = new \DateTime();
         $file = $kernel->getProjectDir() . "/public/translationFiles/";
         $name = 'yaml-translator-' . $now->getTimestamp() .'.fr.yaml';
