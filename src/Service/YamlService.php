@@ -180,7 +180,7 @@ class YamlService{
 
             fclose($stream);
 
-            return $file . $name;
+            return 'translationFiles/'.$name;
         }
 
         return false;
