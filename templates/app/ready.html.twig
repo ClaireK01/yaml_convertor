@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'messages' %}
+
+{% block title %}YamlConvertor{% endblock %}
+
+{% block body %}
+    <div class="ready">
+        <h1>Votre fichier est prêt !</h1>
+        <a download href="{{ asset(file) }}" class="btn btn-form">{{ 'all.getfile'|trans}} <i class="fa fa-arrow-right"></i></a>
+        <a href="{{ path('app_homepage') }}" class="link">{{ 'all.returnhome'|trans}}</a>
+    </div>
+
+{% endblock %}

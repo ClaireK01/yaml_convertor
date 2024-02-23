@@ -34,15 +34,31 @@ const $app = {
     handleForm : function(){
         document.querySelector('.btn-form').addEventListener('click', function (e){
             e.preventDefault();
+            document.querySelector('.loader').style.opacity = "1";
+            document.querySelector('.loader').style.zIndex = "1";
             let url = document.querySelector('.form-content').dataset.url;
             let data = new FormData(document.querySelector('form[name=yaml_file]'));
-            console.log(document.querySelector('.form-content').dataset.url);
+
             $.ajax({
                 url: url,
-                data: { form : data},
+                cache: false,
+                data: data,
                 method: 'POST',
                 success : function (json){
-                    // console.log(json)
+                    console.log(json)
+                    document.querySelector('.loader').style.opacity = 0;
+                    let form = document.createElement('form');
+                    form.action = document.querySelector('.loader').dataset.dl;
+                    form.hidden = true;
+                    form.method = "POST";
+
+                    let input = document.createElement('input');
+                    input.value = json.file;
+                    input.name = 'file';
+                    form.appendChild(input);
+                    document.querySelector('body').appendChild(form);
+                    form.submit();
+
                 },
                 error : function (){},
                 processData: false,
@@ -53,7 +69,7 @@ const $app = {
 
     init : function (){
         this.initListenners();
-        // this.handleForm();
+        this.handleForm();
     }
 }
 

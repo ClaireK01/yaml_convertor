@@ -5,9 +5,7 @@
 {% block title %}YamlConvertor{% endblock %}
 
 {% block body %}
-
-    <div class="container my-5">
-        <h1>YamlConvertor_</h1>
+     <h1>YamlConvertor_</h1>
         {% for m in app.flashes('file.error') %}
             <div class="div-message">
                 <p>{{ m }}</p>
@@ -24,6 +22,4 @@
             <div style="position: absolute; right: 10rem" class="form-error">{{ form_errors(form.file) }}</div>
         <button type="submit" class="btn btn-form">{{ 'all.translate'|trans}} <i class="fa fa-arrow-right"></i></button>
         {{ form_end(form) }}
-    </div>
-
 {% endblock %}

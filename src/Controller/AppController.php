@@ -26,6 +26,19 @@ class AppController extends AbstractController
         $yamlFile = new YamlFile();
         $form = $this->createForm(YamlFileType::class, $yamlFile);
 
+        return $this->render('app/index.html.twig', [
+            'controller_name' => 'AppController',
+            'form' => $form->createView(),
+        ]);
+    }
+
+//    //mise en place requete ajax pour loader
+    #[Route('/process', name: 'app_yaml_process', methods: ['GET', 'POST'])]
+    public function processYamlAction(Request $request, KernelInterface $kernel, YamlService $yamlService)
+    {
+        $yamlFile = new YamlFile();
+        $form = $this->createForm(YamlFileType::class, $yamlFile);
+
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
@@ -45,37 +58,41 @@ class AppController extends AbstractController
                     try{
                         $arrayTrans = $yamlService->handleYaml($yaml, $yamlFile->getConcatenation());
                         if(count($arrayTrans) < 300 /* && !$this->getUser() || $this->getUser() ---- limite de ligne pour les non-abonnées */){
-                                $fileTranslated = $yamlService->generateTranslationFile($arrayTrans, $kernel);
-                                if($fileTranslated){
-                                    return $this->file($fileTranslated);
-                                }
+                            $fileTranslated = $yamlService->generateTranslationFile($arrayTrans, $kernel);
+                            if($fileTranslated){
+                                return $this->json(['file' => $fileTranslated], 200);
+                            }
                         }else{
                             $error = new FormError("Votre fichier dépasse le nombre de ligne maximum pour un compte basique. Passez à un abonnement premium pour un plus grand nombre de traduction !");
                             $form->get('file')->addError($error);
                         }
                     }catch(\Exception $e){
                         if($e instanceof ClientException){
-                            $this->addFlash('file.error', "Une erreur est survenue lors du traitement de votre fichier (Usage max. API dépassé). Veuillez réesayer plus tard");
+                            return $this->json(['message' => "Une erreur est survenue lors du traitement de votre fichier (Usage max. API dépassé). Veuillez réesayer plus tard"], 500);
+
+//                            $this->addFlash('file.error', "Une erreur est survenue lors du traitement de votre fichier (Usage max. API dépassé). Veuillez réesayer plus tard");
                         }else{
-                            $this->addFlash('file.error', "Une erreur est survenue lors du traitement de votre fichier. Veuillez réesayer plus tard.");
+                            return $this->json(['message' => "Une erreur est survenue lors du traitement de votre fichier. Veuillez réesayer plus tard."], 500);
+
+//                            $this->addFlash('file.error', "Une erreur est survenue lors du traitement de votre fichier. Veuillez réesayer plus tard.");
                         }
                     }
                 }else{
-                    $this->addFlash('file.error', $response['message']);
+//                    $this->addFlash('file.error', $response['message']);
+                    return $this->json(['message' => $response['message']]);
                 }
             }
         }
 
-        return $this->render('app/index.html.twig', [
-            'controller_name' => 'AppController',
-            'form' => $form->createView(),
-        ]);
+
+        return $this->json(['test'], 200);
     }
 
-//    //mise en place requete ajax pour loader
-    #[Route('/process', name: 'app_yaml_process', methods: ['GET', 'POST'])]
-    public function processYamlAction(Request $request, KernelInterface $kernel, YamlService $yamlService)
+    #[Route('/yaml/download', name: 'app_yaml_download', methods: 'POST')]
+    public function downloadFileAction(Request $request, KernelInterface $kernel, YamlService $yamlService)
     {
-        return $this->json(['test'], 200);
+        $file = $request->request->get('file');
+
+        return $this->render('app/ready.html.twig', ['file' => $file]);
     }
 }

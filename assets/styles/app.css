@@ -3,6 +3,14 @@
     src: local("Trickster"), url("/assets/fonts/MPLUSCodeLatin.ttf") format("opentype")
 }
 
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+}
+
 body {
     background: rgb(38,3,94);
     background: linear-gradient(90deg, rgba(38,3,94,1) 0%, rgba(9,6,69,1) 25%, rgba(71,20,154,1) 100%);
@@ -11,6 +19,10 @@ body {
 
 .container{
     text-align: center;
+}
+
+.content{
+    padding: 2rem;
 }
 
 h1{
@@ -109,11 +121,94 @@ form {
     margin: 0;
 }
 
+/* loader */
+.loader {
+    width:100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.21);
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    z-index: -1;
+    padding: 0;
+    margin: 0;
+
+}
+
+.loader-wheel {
+    animation: spin 1s infinite linear;
+    border: 2px solid rgba(30, 30, 30, 0.5);
+    border-left: 4px solid #fff;
+    border-radius: 50%;
+    height: 50px;
+    margin-bottom: 10px;
+    width: 50px;
+}
+
+.loader-text {
+    color: #fff;
+    font-family: arial, sans-serif;
+}
+
+.ready{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+}
+
+.ready a{
+    max-width: 30%;
+}
+
+.ready .link{
+    color: lightgrey;
+    text-decoration: none;
+    padding-top: 6rem;
+    bottom: 1rem;
+}
+
+.loader-text:after {
+    content: 'Loading';
+    animation: load 2s linear infinite;
+}
+
+
 footer{
     padding: 3rem;
     background-color: rgba(76, 43, 93, 0);
     display: flex;
     justify-content: space-around;
+    bottom: 0;
+    width: 100%;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes load {
+    0% {
+        content: 'Loading';
+    }
+    33% {
+        content: 'Loading.';
+    }
+    67% {
+        content: 'Loading..';
+    }
+    100% {
+        content: 'Loading...';
+    }
 }
 
 @media only screen and (max-width: 1000px){
@@ -132,5 +227,9 @@ footer{
     }
     .checkbox{
         padding: 2rem 0;
+    }
+
+    .ready a{
+        max-width: 90%;
     }
 }

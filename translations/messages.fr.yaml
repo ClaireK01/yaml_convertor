@@ -2,6 +2,8 @@ all:
   translate: Traduire
   drop: Cliquez ou déposez un fichier
   nofile: Aucun fichier déposé
+  getfile: Télécharger le fichier
+  returnhome: Retour à l'accueil
 
 home: "nouvelle options disponible : acceuil"
 drop: Placer votre fichier ici !
