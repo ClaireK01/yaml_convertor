@@ -39,13 +39,22 @@ const $app = {
             let url = document.querySelector('.form-content').dataset.url;
             let data = new FormData(document.querySelector('form[name=yaml_file]'));
 
+            let divMess = document.querySelector('.div-message');
+            divMess.style.display = 'none';
+            divMess.innerHTML = "";
+
+
+
+            console.log('')
             $.ajax({
                 url: url,
                 cache: false,
                 data: data,
                 method: 'POST',
+                processData: false,
+                contentType: false,
                 success : function (json){
-                    console.log(json)
+
                     document.querySelector('.loader').style.opacity = 0;
                     let form = document.createElement('form');
                     form.action = document.querySelector('.loader').dataset.dl;
@@ -60,9 +69,17 @@ const $app = {
                     form.submit();
 
                 },
-                error : function (){},
-                processData: false,
-                contentType: false,
+                error : function (json){
+                    let message = document.createElement('p');
+                    let divMess = document.querySelector('.div-message');
+                    json = json.responseJSON;
+                    divMess.innerHTML = "";
+                    message.innerHTML = json.message;
+                    divMess.appendChild(message)
+                    divMess.style.display = 'block';
+                    document.querySelector('.loader').style.opacity = 0;
+                    document.querySelector('.loader').style.zIndex = -1;
+                },
             })
         })
     },

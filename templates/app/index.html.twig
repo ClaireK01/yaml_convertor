@@ -6,11 +6,8 @@
 
 {% block body %}
      <h1>YamlConvertor_</h1>
-        {% for m in app.flashes('file.error') %}
-            <div class="div-message">
-                <p>{{ m }}</p>
-            </div>
-        {% endfor %}
+        <div class="div-message">
+        </div>
         {{ form_start(form) }}
         <div class="form-content" data-url="{{ path('app_yaml_process') }}">
             {{ form_widget(form) }}

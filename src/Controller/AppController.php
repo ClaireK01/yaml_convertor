@@ -70,22 +70,17 @@ class AppController extends AbstractController
                         if($e instanceof ClientException){
                             return $this->json(['message' => "Une erreur est survenue lors du traitement de votre fichier (Usage max. API dépassé). Veuillez réesayer plus tard"], 500);
 
-//                            $this->addFlash('file.error', "Une erreur est survenue lors du traitement de votre fichier (Usage max. API dépassé). Veuillez réesayer plus tard");
                         }else{
                             return $this->json(['message' => "Une erreur est survenue lors du traitement de votre fichier. Veuillez réesayer plus tard."], 500);
-
-//                            $this->addFlash('file.error', "Une erreur est survenue lors du traitement de votre fichier. Veuillez réesayer plus tard.");
                         }
                     }
                 }else{
-//                    $this->addFlash('file.error', $response['message']);
-                    return $this->json(['message' => $response['message']]);
+                    return $this->json(['message' => $response['message'] ], 500);
                 }
             }
         }
 
-
-        return $this->json(['test'], 200);
+        return $this->json(['message' => 'Une erreur est survenue', 't1' => $form->isSubmitted(), 't2' => $form->isSubmitted() && $form->isValid()], 500);
     }
 
     #[Route('/yaml/download', name: 'app_yaml_download', methods: 'POST')]

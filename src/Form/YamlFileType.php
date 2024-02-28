@@ -34,18 +34,19 @@ class YamlFileType extends AbstractType
             ->add('originalanguage', ChoiceType::class, [
                 'choices' => [
                     "Choissisez la langue à traduire" => null,
-                    "EN" => "EN",
-                    "FR" => "FR",
-                    "IT" => "IT",
+                    "Français" => "FR",
+                    "English" => "EN",
+                    "Italiano" => "IT",
                 ],
+                'data' => 'FR',
                 'label' => "Language à traduire"
             ])
             ->add('targetLanguage', ChoiceType::class, [
                 'choices' => [
                     "Choissisez la langue de traduction"=> null,
-                    "EN" => "EN",
-                    "FR" => "FR",
-                    "IT" => "IT",
+                    "Français" => "FR",
+                    "English" => "EN",
+                    "Italiano" => "IT",
                 ],
                 'data' => 'EN',
                 'label' => "Language de traduction"

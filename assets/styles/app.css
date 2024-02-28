@@ -115,6 +115,7 @@ form {
     padding: 1rem;
     border-radius: 35px;
     margin-bottom: 3rem;
+    display: none;
 }
 
 .div-message p{
