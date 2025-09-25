@@ -55,7 +55,7 @@ class AppController extends AbstractController
                 //check type dans nom fichier
                 if($response['status'] == 200){
                     $yaml = $response['path'];
-                    try{
+//                    try{
                         $arrayTrans = $yamlService->handleYaml($yaml, $yamlFile->getConcatenation());
                         if(count($arrayTrans) < 300 /* && !$this->getUser() || $this->getUser() ---- limite de ligne pour les non-abonnées */){
                             $fileTranslated = $yamlService->generateTranslationFile($arrayTrans, $kernel);
@@ -66,14 +66,14 @@ class AppController extends AbstractController
                             $error = new FormError("Votre fichier dépasse le nombre de ligne maximum pour un compte basique. Passez à un abonnement premium pour un plus grand nombre de traduction !");
                             $form->get('file')->addError($error);
                         }
-                    }catch(\Exception $e){
-                        if($e instanceof ClientException){
-                            return $this->json(['message' => "Une erreur est survenue lors du traitement de votre fichier (Usage max. API dépassé). Veuillez réesayer plus tard"], 500);
-
-                        }else{
-                            return $this->json(['message' => "Une erreur est survenue lors du traitement de votre fichier. Veuillez réesayer plus tard."], 500);
-                        }
-                    }
+//                    }
+//                    catch(\Exception $e){
+//                        if($e instanceof ClientException){
+//                            return $this->json(['message' => "Une erreur est survenue lors du traitement de votre fichier (Usage max. API dépassé). Veuillez réesayer plus tard"], 500);
+//                        }else{
+//                            return $this->json(['message' => "Une erreur est survenue lors du traitement de votre fichier. Veuillez réesayer plus tard."], 500);
+//                        }
+//                    }
                 }else{
                     return $this->json(['message' => $response['message'] ], 500);
                 }

@@ -52,7 +52,7 @@ class YamlFileType extends AbstractType
                 'label' => "Language de traduction"
             ])
             ->add("space", ChoiceType::class, [
-                "label" => "Vous indentez avec...",
+                "label" => "Nombre d'espace utiliser pour vous indentation",
                 'choices' => [
                     "Vous indentez avec..." => null,
                     "Des tabulations" => 2,

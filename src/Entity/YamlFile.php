@@ -37,7 +37,7 @@ class YamlFile{
     /**
      * @Assert\NotNull(message="Cette valeur ne peut pas être null")
      */
-    private $space = 2;
+    private $space = 1;
 
 
     private $concatenation;
