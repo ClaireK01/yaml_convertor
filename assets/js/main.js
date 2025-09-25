@@ -43,6 +43,8 @@ const $app = {
             divMess.style.display = 'none';
             divMess.innerHTML = "";
 
+
+
             $.ajax({
                 url: url,
                 cache: false,
@@ -52,30 +54,30 @@ const $app = {
                 contentType: false,
                 success : function (json){
 
-                    // document.querySelector('.loader').style.opacity = 0;
-                    // let form = document.createElement('form');
-                    // form.action = document.querySelector('.loader').dataset.dl;
-                    // form.hidden = true;
-                    // form.method = "POST";
-                    //
-                    // let input = document.createElement('input');
-                    // input.value = json.file;
-                    // input.name = 'file';
-                    // form.appendChild(input);
-                    // document.querySelector('body').appendChild(form);
+                    document.querySelector('.loader').style.opacity = 0;
+                    let form = document.createElement('form');
+                    form.action = document.querySelector('.loader').dataset.dl;
+                    form.hidden = true;
+                    form.method = "POST";
+
+                    let input = document.createElement('input');
+                    input.value = json.file;
+                    input.name = 'file';
+                    form.appendChild(input);
+                    document.querySelector('body').appendChild(form);
                     form.submit();
 
                 },
                 error : function (json){
-                    // let message = document.createElement('p');
-                    // let divMess = document.querySelector('.div-message');
-                    // json = json.responseJSON;
-                    // divMess.innerHTML = "";
-                    // message.innerHTML = json.message;
-                    // divMess.appendChild(message)
-                    // divMess.style.display = 'block';
-                    // document.querySelector('.loader').style.opacity = 0;
-                    // document.querySelector('.loader').style.zIndex = -1;
+                    let message = document.createElement('p');
+                    let divMess = document.querySelector('.div-message');
+                    json = json.responseJSON;
+                    divMess.innerHTML = "";
+                    message.innerHTML = json.message;
+                    divMess.appendChild(message)
+                    divMess.style.display = 'block';
+                    document.querySelector('.loader').style.opacity = 0;
+                    document.querySelector('.loader').style.zIndex = -1;
                 },
             })
         })

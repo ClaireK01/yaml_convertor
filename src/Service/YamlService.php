@@ -9,6 +9,8 @@ use Symfony\Component\VarDumper\VarDumper;
 
 class YamlService{
 
+    //TODO: ESSAYER DE FORCER REFORMATTAGE PAR LIGNE D'INDENTATION
+
     private $kernel;
 
     public  function __construct(KernelInterface $kernel){
@@ -53,43 +55,14 @@ class YamlService{
 
     public function processYaml($array, $index, $indentation, $yaml, $multiligne = false, $sentence = null){
         $space = $this->space;
-//        try{
-            //recuperation ligne actu, prec et suiv
-            $prev = key_exists($index - 1, $yaml) ? $yaml[$index - 1] : null;
-            $ligne = $yaml[$index];
-            $next = key_exists($index + 1, $yaml) ? $yaml[$index + 1] : null;
-            //compter le nombre d'espace ; en théorie toujours la meme data si le yaml est correct mais permet de gérer tout les cas
-            preg_match_all("#->#", $ligne, $matchLine);
-            preg_match_all("#->#", $next, $matchNext);
-            preg_match_all("#->#", $prev, $matchPrev);
-//            $spaceLine = !empty($matchLine) ? count($matchLine[0] - $indentation) : $this->space; //calculer les trois et les utiliser appropriament
-            $spaceNext = !empty($matchNext) ? count($matchNext[0])  - $indentation: $this->space; //peut pas se base sur ligne actuel
-//            $spacePrev = !empty($matchPrev) ? count($matchPrev[0] - $indentation) : $this->space; //peut pas se base sur ligne actuel
-            VarDumper::dump("space : ".$space);
-            VarDumper::dump("indentation : ".$indentation);
-//            check si indentation
-            $matchIndentationNextLine = preg_match("#^(?<!->)(->){". $indentation + $spaceNext .",}(?!->)#", $next);
-            $matchDesindentationNextLine =  preg_match("#^(?<!->)(->){0,". $indentation - $spaceNext ."}(?!->)#", $next, $match);
-            VarDumper::dump("match next line : ". $matchIndentationNextLine);
-            VarDumper::dump("match des next line : ". $matchDesindentationNextLine);
+        //recuperation ligne actu, prec et suiv
+        $prev = key_exists($index - 1, $yaml) ? $yaml[$index - 1] : null;
+        $ligne = $yaml[$index];
+        $next = key_exists($index + 1, $yaml) ? $yaml[$index + 1] : null;
 
-//        } catch (\Exception $e) {
-//            VarDumper::dump($e->getMessage());
-//            VarDumper::dump($yaml);
-//            VarDumper::dump($array);
-//            die(VarDumper::dump($index));
-//        }
-
-        if($index > 6 ){
-            VarDumper::dump($indentation);
-            VarDumper::dump($index);
-            VarDumper::dump($yaml);
-            VarDumper::dump($array);
-            die(VarDumper::dump($index));
-        }
-
-
-
+        //check si indentation
+        $matchIndentationNextLine = preg_match("#^(?<!->)(->){". $indentation + $space .",}(?!->)#", $next);
+        $matchDesindentationNextLine =  preg_match("#^(?<!->)(->){0,". $indentation - $space ."}(?!->)#", $next, $match);
 
         if(!ctype_space($ligne) && $ligne != "\r" && $ligne != ""){
             $trans = $multiligne ? [$ligne] : preg_split("#(:)#", $ligne, 2);
@@ -100,7 +73,7 @@ class YamlService{
         }
 
         if($matchIndentationNextLine == 1) {
-            $indentation += $spaceNext;
+            $indentation += $space;
             $index++;
             if(!$multiligne && key_exists(1, $trans) && str_replace([" ", "\s", "\r"], "", $trans[1]) == "|"){
                 $multiligne = true;
@@ -119,8 +92,6 @@ class YamlService{
                 $trans[1] = $translated;
             }
             $array[] = $trans;
-            VarDumper::dump("if");
-            VarDumper::dump($array);
         }else{
             if(!ctype_space($word) && $word != "\r"){
                 $translated = $this->getTranslation($word, "FR", "EN");
@@ -138,9 +109,6 @@ class YamlService{
                 $trans['ind'] = $indentation;
                 $array[] = $trans;
                 $index++;
-                VarDumper::dump("else");
-                VarDumper::dump($array);
-
             }else{
                 $array[] = $trans;
                 $index++;
@@ -156,7 +124,7 @@ class YamlService{
         }
 
         if($matchDesindentationNextLine == 1){
-            $indentation -= $spaceNext;
+            $indentation -= $space;
         }
 
         return ["array" => $array, "index" => $index, 'indentation' => $indentation, 'multiligne' => $multiligne];
