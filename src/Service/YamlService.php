@@ -36,7 +36,7 @@ class YamlService{
     }
 
 
-    public function handleYaml(string $path, bool $concatMultiligne){
+    public function handleYaml(string $path){
         $yaml = file_get_contents($path);
         $arrayYaml = explode("\n",$yaml);
         $arrayYaml = preg_replace("#(?= )(?<= )( )|^ #",'->', $arrayYaml);
@@ -44,11 +44,7 @@ class YamlService{
         $i = 0;
         $arrayTrans = [];
 
-        if(!$concatMultiligne){
-            $arrayTrans = $this->processYaml($arrayTrans, $i, 0, $arrayYaml)["array"];
-        }else{
-            $arrayTrans = $this->processYamlWithConcatMultiligne($arrayTrans, $i, 0, $arrayYaml)["array"];
-        }
+        $arrayTrans = $this->processYaml($arrayTrans, $i, 0, $arrayYaml)["array"];
 
         return $arrayTrans;
 
@@ -284,88 +280,6 @@ class YamlService{
         }
 
         return "";
-    }
-
-    //même func avec concat multigne. Voir laquelle garder
-    public function processYamlWithConcatMultiligne($array, $index, $indentation, $yaml, $multiligne = false, $sentence = null)
-    {
-        $space = $this->space;
-        //recuperation ligne actu, prec et suiv
-        $prev = key_exists($index - 1, $yaml) ? $yaml[$index - 1] : null;
-        $ligne = $yaml[$index];
-        $next = key_exists($index + 1, $yaml) ? $yaml[$index + 1] : null;
-
-        //check si indentation
-        $matchIndentationNextLine = preg_match("#^(?<!->)(->){" . $indentation + $space . ",}(?!->)#", $next);
-        $matchDesindentationNextLine = preg_match("#^(?<!->)(->){0," . $indentation - $space . "}(?!->)#", $next, $match);
-
-        if (!ctype_space($ligne) && $ligne != "\r" && $ligne != "") {
-            $trans = $multiligne ? [$ligne] : preg_split("#(:)#", $ligne, 2);
-            $word = $multiligne ? $trans[0] : $trans[1];
-        } else {
-            $trans = [$ligne, $ligne];
-            $word = $trans[0];
-        }
-
-        if ($matchIndentationNextLine == 1) {
-            $indentation += $space;
-            $index++;
-            if (!$multiligne && str_replace([" ", "\s", "\r"], "", $trans[1]) == "|") {
-                $multiligne = true;
-            } elseif ($multiligne && $matchDesindentationNextLine == 1) {
-                $multiligne = false;
-            }
-
-            $res = $this->processYamlWithConcatMultiligne($trans, $index, $indentation, $yaml, $multiligne);
-            $trans = $res["array"];
-            $index = $res['index'];
-            $indentation = $res["indentation"];
-            $multiligne = $res["multiligne"];
-            $trans['ind'] = $indentation;
-            $array[] = $trans;
-        } else {
-            if (!ctype_space($word) && $word != "\r") {
-                if (!$multiligne) {
-                    $translated = $this->getTranslation($word, "FR", "EN");
-                    $trans[1] = $translated;
-                    $trans['ind'] = $indentation;
-                    $array[] = $trans;
-                } else {
-                    $word = str_replace(["\r", "->"], "", $word);
-                    $sentence .= " " . $word;
-                }
-                //multiligne pr prochaine
-                if (!$multiligne && str_replace(["\w", "->", "\r"], "", $trans[1]) == "|") {
-                    $multiligne = true;
-                } elseif ($multiligne && $matchDesindentationNextLine == 1) {
-                    $translated = $this->getTranslation($sentence);
-                    $trans[0] = $translated;
-                    $sentence = null;
-                    $multiligne = false;
-                    $trans['ind'] = $indentation;
-                    $array[] = $trans;
-                }
-
-                $index++;
-            } else {
-                $array[] = $trans;
-                $index++;
-            }
-        }
-
-        if(key_exists($index, $yaml) && $matchDesindentationNextLine == 0) {
-            $res = $this->processYamlWithConcatMultiligne($array, $index, $indentation, $yaml, $multiligne, $sentence);
-            $index = $res["index"];
-            $array = $res["array"];
-            $indentation = $res["indentation"];
-            $multiligne = $res["multiligne"];
-        }
-
-        if($matchDesindentationNextLine == 1){
-            $indentation -= $space;
-        }
-
-        return ["array" => $array, "index" => $index, 'indentation' => $indentation, 'multiligne' => $multiligne];
     }
 
 }
