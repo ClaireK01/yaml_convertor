@@ -51,14 +51,6 @@ class YamlFileType extends AbstractType
                 'data' => 'EN',
                 'label' => "Language de traduction"
             ])
-            ->add("space", ChoiceType::class, [
-                "label" => "Nombre d'espace utiliser pour vous indentation",
-                'choices' => [
-                    "Vous indentez avec..." => null,
-                    "Des tabulations" => 2,
-                    "Des espaces" => 1,
-                ]
-            ])
             ->add('concatenation', CheckboxType::class, [
                 'label' => "Rassemblez les valeurs réparties sur plusieurs lignes en une seul",
                 "required" => false,

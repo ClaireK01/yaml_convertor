@@ -40,6 +40,7 @@ class YamlService{
         $yaml = file_get_contents($path);
         $arrayYaml = explode("\n",$yaml);
         $arrayYaml = preg_replace("#(?= )(?<= )( )|^ #",'->', $arrayYaml);
+        $arrayYaml = $this->reformat($arrayYaml);
         $i = 0;
         $arrayTrans = [];
 
@@ -53,8 +54,37 @@ class YamlService{
 
     }
 
-    public function processYaml($array, $index, $indentation, $yaml, $multiligne = false, $sentence = null){
-        $space = $this->space;
+    public function reformat($arrayYaml){
+
+        $indentation = 0;
+        $oldIndentation = 0;
+
+        foreach ($arrayYaml as $i => $line){
+            $indentationRegex = "#^(?<!->)(->){". $indentation + 1 .",}(?!->)#";
+            $desindentationRegex = "#^(?<!->)(->){0,". $indentation - 1 ."}(?!->)#";
+
+            $matchIndentation = preg_match($indentationRegex, $line);
+            $matchDesindentation = ($indentation > 0 ?  preg_match($desindentationRegex, $line) : 0);
+            $currentIndentation = preg_match_all("#->#", $line, $match);
+
+            if($matchIndentation == 1 &&  $currentIndentation != $oldIndentation){
+                $indentation++;
+                $arrayYaml[$i] = preg_replace($indentationRegex, str_repeat('->', $indentation), $line);
+            }elseif ($matchDesindentation == 1  &&  $currentIndentation != $oldIndentation){
+                $indentation = $currentIndentation == 0 ?  0 : $indentation - 1;
+                $arrayYaml[$i] = preg_replace($desindentationRegex, str_repeat('->', $indentation), $line);
+            }else{
+                $arrayYaml[$i] = str_replace("->", str_repeat('->', $indentation), $line);
+            }
+
+            $oldIndentation = $currentIndentation;
+        }
+
+        return $arrayYaml;
+    }
+
+    public function processYaml($array, $index, $indentation, $yaml, $multiligne = false, $sentence = null) {
+        $space = 1;
         //recuperation ligne actu, prec et suiv
         $prev = key_exists($index - 1, $yaml) ? $yaml[$index - 1] : null;
         $ligne = $yaml[$index];
@@ -63,6 +93,7 @@ class YamlService{
         //check si indentation
         $matchIndentationNextLine = preg_match("#^(?<!->)(->){". $indentation + $space .",}(?!->)#", $next);
         $matchDesindentationNextLine =  preg_match("#^(?<!->)(->){0,". $indentation - $space ."}(?!->)#", $next, $match);
+        $realIndentationNext = preg_match_all("#->#", $ligne, $match);
 
         if(!ctype_space($ligne) && $ligne != "\r" && $ligne != ""){
             $trans = $multiligne ? [$ligne] : preg_split("#(:)#", $ligne, 2);
@@ -106,7 +137,13 @@ class YamlService{
                 }elseif($multiligne && $matchDesindentationNextLine == 1){
                     $multiligne = false;
                 }
-                $trans['ind'] = $indentation;
+
+                if($matchDesindentationNextLine == 1 && $realIndentationNext == 0){
+                    $trans['ind'] = $realIndentationNext;
+                }else{
+                    $trans['ind'] = $indentation;
+                }
+
                 $array[] = $trans;
                 $index++;
             }else{
