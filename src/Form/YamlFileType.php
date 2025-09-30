@@ -51,10 +51,10 @@ class YamlFileType extends AbstractType
                 'data' => 'EN',
                 'label' => "Language de traduction"
             ])
-            ->add('concatenation', CheckboxType::class, [
-                'label' => "Rassemblez les valeurs réparties sur plusieurs lignes en une seul",
-                "required" => false,
-            ])
+//            ->add('concatenation', CheckboxType::class, [
+//                'label' => "Rassemblez les valeurs réparties sur plusieurs lignes en une seul",
+//                "required" => false,
+//            ])
         ;
     }
 
