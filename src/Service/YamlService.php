@@ -74,7 +74,7 @@ class YamlService{
                 $indentation = $currentIndentation == 0 ?  0 : $indentation - 1;
                 $arrayYaml[$i] = preg_replace($desindentationRegex, str_repeat('->', $indentation), $line);
             }else{
-                $arrayYaml[$i] = str_replace("->", str_repeat('->', $indentation), $line);
+                $arrayYaml[$i] = preg_replace("#(->){1,}#", str_repeat('->', $indentation), $line);
             }
 
             $oldIndentation = $currentIndentation;
